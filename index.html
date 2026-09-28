@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111113">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Notes">
+  <title>Notes</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">PERSONAL</div>
+        <h1>Notes</h1>
+      </div>
+      <button id="lockBtn" class="iconbtn hidden" aria-label="Verrouiller">⌁</button>
+    </header>
+
+    <section id="welcomeView" class="panel">
+      <h2>Créer ton espace</h2>
+      <p class="muted">Aucune API. Tes liens sont chiffrés dans le navigateur avec ton code.</p>
+
+      <label for="newPin">Code privé</label>
+      <input id="newPin" type="password" inputmode="numeric" autocomplete="new-password" placeholder="6 chiffres minimum">
+
+      <label for="confirmPin">Confirme le code</label>
+      <input id="confirmPin" type="password" inputmode="numeric" autocomplete="new-password" placeholder="Même code">
+
+      <button id="createVaultBtn" class="primary">Créer</button>
+
+      <div class="divider"><span>ou</span></div>
+
+      <label for="importText">Importer un lien / code privé</label>
+      <textarea id="importText" rows="4" placeholder="Colle ici ton lien privé ou ton code de sauvegarde"></textarea>
+      <button id="importBtn" class="secondary">Importer</button>
+      <p id="welcomeMsg" class="msg"></p>
+    </section>
+
+    <section id="unlockView" class="panel hidden">
+      <h2>Ouvrir</h2>
+      <p class="muted">Entre ton code.</p>
+      <input id="unlockPin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••••">
+      <button id="unlockBtn" class="primary">Continuer</button>
+      <button id="resetLocalBtn" class="textbtn">Effacer ce coffre de cet appareil</button>
+      <p id="unlockMsg" class="msg"></p>
+    </section>
+
+    <section id="vaultView" class="hidden">
+      <section class="panel compact">
+        <div class="row between">
+          <div>
+            <div class="eyebrow">MES NOTES</div>
+            <div id="countLabel" class="count">0 conversation</div>
+          </div>
+          <button id="addBtn" class="smallbtn">＋ Ajouter</button>
+        </div>
+      </section>
+
+      <section id="addPanel" class="panel hidden">
+        <h2>Ajouter un chat</h2>
+        <p class="muted small">
+          Ouvre le chat ChatGPT que tu veux garder, copie son adresse, puis colle-la ici.
+        </p>
+
+        <label for="chatLabel">Nom discret</label>
+        <input id="chatLabel" type="text" maxlength="80" placeholder="Ex : Marketing - TD 2">
+
+        <label for="chatUrl">Lien du chat</label>
+        <input id="chatUrl" type="url" placeholder="https://chatgpt.com/c/...">
+
+        <div class="row gap">
+          <button id="saveChatBtn" class="primary">Enregistrer</button>
+          <button id="cancelAddBtn" class="secondary">Annuler</button>
+        </div>
+        <p id="addMsg" class="msg"></p>
+      </section>
+
+      <section class="panel listpanel">
+        <div id="emptyState" class="empty">
+          <div class="emptyIcon">✦</div>
+          <p>Rien ici pour l’instant.</p>
+          <p class="muted small">Ajoute le lien d’un chat, puis archive l’original dans ChatGPT.</p>
+        </div>
+        <div id="chatList"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Accès sur tes autres appareils</h2>
+        <p class="muted small">
+          Le bouton ci-dessous génère une copie chiffrée de ta liste de chats. Ouvre le lien une seule fois sur ton autre appareil, puis entre le même code.
+        </p>
+        <button id="copyPrivateLinkBtn" class="secondary">Copier mon lien privé</button>
+        <button id="copyBackupBtn" class="secondary">Copier le code de sauvegarde</button>
+
+        <div class="notice">
+          <strong>À faire après chaque ajout important :</strong>
+          recopie le lien privé sur tes autres appareils si tu veux qu’ils aient la version la plus récente.
+        </div>
+
+        <p id="syncMsg" class="msg"></p>
+      </section>
+
+      <section class="panel danger">
+        <h2>Rappel important</h2>
+        <p class="muted small">
+          Pour que le chat disparaisse de la sidebar sur tous les appareils utilisant ton compte ChatGPT,
+          ajoute-le ici d’abord, vérifie que le bouton « Ouvrir » fonctionne, puis archive l’original dans ChatGPT.
+          Le chat reste le même chat ChatGPT et tu peux continuer dedans via son lien.
+        </p>
+      </section>
+    </section>
+  </main>
+
+  <template id="chatItemTemplate">
+    <article class="chatItem">
+      <button class="chatOpen">
+        <span class="chatDot"></span>
+        <span class="chatName"></span>
+        <span class="chev">›</span>
+      </button>
+      <button class="chatMenu" aria-label="Supprimer">···</button>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
