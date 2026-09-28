@@ -13,29 +13,35 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="shell">
+<main class="shell">
+  <section id="decoyView" class="hidden">
     <header class="topbar">
-      <div>
-        <div class="eyebrow">PERSONAL</div>
-        <h1>Notes</h1>
-      </div>
+      <div id="secretTap"><div class="eyebrow">MES NOTES</div><h1>Notes</h1></div>
+      <button class="iconbtn">＋</button>
+    </header>
+    <div class="fakeSearch">🔎 Rechercher</div>
+    <div class="fakeGrid">
+      <article class="fakeNote"><h3>Planning</h3><p>Révisions, rendez-vous, choses à faire…</p><span>Aujourd’hui</span></article>
+      <article class="fakeNote"><h3>Liste de la semaine</h3><p>Courses et rappels</p><span>Hier</span></article>
+      <article class="fakeNote"><h3>Idées</h3><p>Notes rapides</p><span>Cette semaine</span></article>
+    </div>
+  </section>
+
+  <section id="realApp">
+    <header class="topbar">
+      <div><div class="eyebrow">PERSONAL</div><h1>Notes</h1></div>
       <button id="lockBtn" class="iconbtn hidden" aria-label="Verrouiller">⌁</button>
     </header>
 
     <section id="welcomeView" class="panel">
       <h2>Créer ton espace</h2>
-      <p class="muted">Aucune API. Tes liens sont chiffrés dans le navigateur avec ton code.</p>
-
+      <p class="muted">Aucune API OpenAI. Tes liens sont chiffrés dans ton navigateur.</p>
       <label for="newPin">Code privé</label>
       <input id="newPin" type="password" inputmode="numeric" autocomplete="new-password" placeholder="6 chiffres minimum">
-
       <label for="confirmPin">Confirme le code</label>
       <input id="confirmPin" type="password" inputmode="numeric" autocomplete="new-password" placeholder="Même code">
-
       <button id="createVaultBtn" class="primary">Créer</button>
-
       <div class="divider"><span>ou</span></div>
-
       <label for="importText">Importer un lien / code privé</label>
       <textarea id="importText" rows="4" placeholder="Colle ici ton lien privé ou ton code de sauvegarde"></textarea>
       <button id="importBtn" class="secondary">Importer</button>
@@ -47,6 +53,7 @@
       <p class="muted">Entre ton code.</p>
       <input id="unlockPin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••••">
       <button id="unlockBtn" class="primary">Continuer</button>
+      <button id="backToDecoyBtn" class="textbtn hidden">Retour aux notes</button>
       <button id="resetLocalBtn" class="textbtn">Effacer ce coffre de cet appareil</button>
       <p id="unlockMsg" class="msg"></p>
     </section>
@@ -54,80 +61,60 @@
     <section id="vaultView" class="hidden">
       <section class="panel compact">
         <div class="row between">
-          <div>
-            <div class="eyebrow">MES NOTES</div>
-            <div id="countLabel" class="count">0 conversation</div>
-          </div>
+          <div><div class="eyebrow">MES NOTES</div><div id="countLabel" class="count">0 conversation</div></div>
           <button id="addBtn" class="smallbtn">＋ Ajouter</button>
         </div>
+        <input id="searchInput" class="searchInput" type="search" placeholder="Rechercher un chat…">
+        <div id="categoryFilters" class="chips"></div>
       </section>
 
       <section id="addPanel" class="panel hidden">
         <h2>Ajouter un chat</h2>
-        <p class="muted small">
-          Ouvre le chat ChatGPT que tu veux garder, copie son adresse, puis colle-la ici.
-        </p>
-
+        <p class="muted small">Ouvre le chat ChatGPT, copie son adresse, puis colle-la ici.</p>
         <label for="chatLabel">Nom discret</label>
         <input id="chatLabel" type="text" maxlength="80" placeholder="Ex : Marketing - TD 2">
-
+        <label for="chatCategory">Catégorie</label>
+        <input id="chatCategory" type="text" maxlength="40" list="categorySuggestions" placeholder="Ex : Cours">
+        <datalist id="categorySuggestions"><option value="Cours"><option value="Projet"><option value="Perso"><option value="Idées"></datalist>
         <label for="chatUrl">Lien du chat</label>
         <input id="chatUrl" type="url" placeholder="https://chatgpt.com/c/...">
-
-        <div class="row gap">
-          <button id="saveChatBtn" class="primary">Enregistrer</button>
-          <button id="cancelAddBtn" class="secondary">Annuler</button>
-        </div>
+        <div class="row gap"><button id="saveChatBtn" class="primary">Enregistrer</button><button id="cancelAddBtn" class="secondary">Annuler</button></div>
         <p id="addMsg" class="msg"></p>
       </section>
 
       <section class="panel listpanel">
-        <div id="emptyState" class="empty">
-          <div class="emptyIcon">✦</div>
-          <p>Rien ici pour l’instant.</p>
-          <p class="muted small">Ajoute le lien d’un chat, puis archive l’original dans ChatGPT.</p>
-        </div>
+        <div id="emptyState" class="empty"><div class="emptyIcon">✦</div><p>Rien ici pour l’instant.</p><p class="muted small">Ajoute le lien d’un chat, puis archive l’original dans ChatGPT.</p></div>
         <div id="chatList"></div>
       </section>
 
       <section class="panel">
+        <h2>Mode discret</h2>
+        <div class="settingRow">
+          <div><strong>Écran leurre</strong><p>À l’ouverture, Notes ressemble à une app banale. Tape 5 fois sur le grand titre « Notes » pour faire apparaître le code.</p></div>
+          <label class="switch"><input id="decoyToggle" type="checkbox"><span></span></label>
+        </div>
+        <p id="privacyMsg" class="msg"></p>
+      </section>
+
+      <section class="panel">
         <h2>Accès sur tes autres appareils</h2>
-        <p class="muted small">
-          Le bouton ci-dessous génère une copie chiffrée de ta liste de chats. Ouvre le lien une seule fois sur ton autre appareil, puis entre le même code.
-        </p>
+        <p class="muted small">Génère une copie chiffrée de ta liste de chats, puis importe-la sur l’autre appareil.</p>
         <button id="copyPrivateLinkBtn" class="secondary">Copier mon lien privé</button>
         <button id="copyBackupBtn" class="secondary">Copier le code de sauvegarde</button>
-
-        <div class="notice">
-          <strong>À faire après chaque ajout important :</strong>
-          recopie le lien privé sur tes autres appareils si tu veux qu’ils aient la version la plus récente.
-        </div>
-
         <p id="syncMsg" class="msg"></p>
       </section>
 
-      <section class="panel danger">
-        <h2>Rappel important</h2>
-        <p class="muted small">
-          Pour que le chat disparaisse de la sidebar sur tous les appareils utilisant ton compte ChatGPT,
-          ajoute-le ici d’abord, vérifie que le bouton « Ouvrir » fonctionne, puis archive l’original dans ChatGPT.
-          Le chat reste le même chat ChatGPT et tu peux continuer dedans via son lien.
-        </p>
-      </section>
+      <section class="panel danger"><h2>Rappel</h2><p class="muted small">Ajoute le chat ici → vérifie qu’il s’ouvre → puis archive l’original dans ChatGPT. Ne le supprime pas.</p></section>
     </section>
-  </main>
+  </section>
+</main>
 
-  <template id="chatItemTemplate">
-    <article class="chatItem">
-      <button class="chatOpen">
-        <span class="chatDot"></span>
-        <span class="chatName"></span>
-        <span class="chev">›</span>
-      </button>
-      <button class="chatMenu" aria-label="Supprimer">···</button>
-    </article>
-  </template>
-
-  <script src="app.js"></script>
+<template id="chatItemTemplate">
+  <article class="chatItem">
+    <button class="chatOpen"><span class="chatDot"></span><span class="chatTexts"><span class="chatName"></span><span class="chatCategory"></span></span><span class="chev">›</span></button>
+    <button class="chatMenu" aria-label="Options">···</button>
+  </article>
+</template>
+<script src="app.js"></script>
 </body>
 </html>

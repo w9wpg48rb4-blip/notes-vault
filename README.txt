@@ -1,65 +1,24 @@
-NOTES VAULT — VERSION GRATUITE SANS API
+NOTES V3.1 — MISE À JOUR SANS PERDRE TON COFFRE
 
-BUT
-- Garder des liens vers tes VRAIS chats ChatGPT.
-- Les ouvrir directement et continuer les conversations originales.
-- Ne payer aucune API.
-- Garder les liens chiffrés avec ton code.
-- Pouvoir transférer ton coffre vers un autre appareil via un lien privé chiffré.
+Cette version garde exactement le même format chiffré que la première version. Donc ton coffre existant continue à fonctionner sur le même appareil.
 
-IMPORTANT
-Pour cacher un chat sur TOUS les appareils utilisant le même compte ChatGPT :
-1) ajoute d'abord le chat dans Notes Vault ;
-2) vérifie que le bouton Ouvrir lance bien la bonne conversation ;
-3) archive ensuite le chat ORIGINAL dans ChatGPT.
-L'archive est ce qui retire le chat de la sidebar au niveau du compte.
-Notes Vault est ton raccourci privé pour le rouvrir directement.
+NOUVEAU
+- Recherche dans les chats
+- Catégories
+- Renommer / changer de catégorie depuis le menu ...
+- Mode leurre : l'app ressemble à une app Notes banale. Pour afficher le vrai écran : tape 5 fois rapidement sur le grand titre Notes.
 
-SÉCURITÉ
-- Le coffre utilise AES-GCM 256.
-- La clé est dérivée de ton code via PBKDF2-SHA256.
-- Les titres/liens sont stockés chiffrés dans localStorage.
-- L'app se verrouille quand tu quittes l'onglet.
-- Le "lien privé" contient seulement une version chiffrée du coffre.
-- Garde quand même ton lien privé pour toi.
+MISE À JOUR
+1. Garde une copie de ton code de sauvegarde actuel.
+2. Dans ton repo GitHub qui héberge Notes, remplace index.html, app.js, style.css et service-worker.js par ceux de ce ZIP.
+3. Tu peux aussi remplacer README.txt.
+4. Commit changes.
+5. Attends 1 à 2 minutes.
+6. Ferme complètement la PWA Notes puis rouvre-la.
+7. Ton ancien PIN et tes anciens chats doivent toujours fonctionner.
 
-TEST LOCAL
-Tu peux ouvrir index.html pour voir l'interface.
-Certaines fonctions (PWA, copie d'un lien hébergé) marchent mieux une fois le site publié.
+MODE LEURRE
+Dans le coffre : Mode discret > Écran leurre. Active-le. Ensuite verrouille l'app. À la prochaine ouverture elle affiche de fausses notes. Tape 5 fois rapidement sur le grand titre Notes pour ouvrir l'écran du PIN.
 
-PUBLIER GRATUITEMENT SUR GITHUB PAGES
-1. Crée un compte GitHub si besoin.
-2. Crée un nouveau dépôt, par exemple "notes-vault".
-3. Ajoute TOUS les fichiers de ce dossier à la racine du dépôt.
-4. Dans GitHub : Settings > Pages.
-5. Source : Deploy from a branch.
-6. Branch : main / root.
-7. Enregistre.
-8. GitHub te donnera une adresse du type :
-   https://TON-NOM.github.io/notes-vault/
-
-Aucune carte bancaire n'est nécessaire pour GitHub Pages sur un dépôt public standard.
-
-PREMIER CHAT
-1. Ouvre ton chat ChatGPT.
-2. Copie son URL, par ex. https://chatgpt.com/c/xxxxxxxx
-3. Ouvre Notes.
-4. Crée ton code.
-5. Clique + Ajouter.
-6. Choisis un nom banal.
-7. Colle le lien.
-8. Enregistre.
-9. Clique Ouvrir pour vérifier.
-10. Seulement après vérification, archive l'original dans ChatGPT.
-
-AUTRE APPAREIL
-1. Dans Notes : "Copier mon lien privé".
-2. Ouvre ce lien sur l'autre appareil.
-3. Entre le même code.
-4. Le coffre est enregistré localement sur cet appareil.
-5. Si tu ajoutes ensuite de nouveaux chats, génère un nouveau lien privé et réimporte-le sur l'autre appareil.
-
-iPHONE
-- Ouvre le site dans Safari.
-- Partager > Sur l'écran d'accueil.
-- L'app s'affichera sous le nom "Notes".
+PROCHAINE ÉTAPE
+Face ID et synchro automatique GitHub privée seront ajoutés ensuite, une fois cette mise à jour confirmée sur ton appareil principal.
