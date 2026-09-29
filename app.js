@@ -259,10 +259,47 @@
   }
 
 
+  function isIOSDevice() {
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent)
+      || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  }
+
+  function nativeChatGPTConversationUrl(rawUrl) {
+    try {
+      const url = new URL(rawUrl);
+      const host = url.hostname.toLowerCase();
+
+      if (!["chatgpt.com", "www.chatgpt.com", "chat.openai.com"].includes(host)) {
+        return null;
+      }
+
+      const match = url.pathname.match(/^\/c\/([A-Za-z0-9-]+)\/?$/);
+      if (!match) return null;
+
+      // Important : on ouvre le thread via le schéma natif de l'app,
+      // sans hash #notes-private et sans passer par le universal-link HTTPS.
+      return `com.openai.chat://chatgpt.com/c/${match[1]}`;
+    } catch {
+      return null;
+    }
+  }
+
   function openChatFromNotes(chat) {
-    // Ouvre le vrai thread ChatGPT, sans toucher à son état archivé/désarchivé.
-    // On laisse Notes ouvert derrière pour que ta bibliothèque reste disponible.
-    window.open(chat.url, "_blank", "noopener");
+    const cleanWebUrl = String(chat.url || "").split("#")[0];
+
+    if (isIOSDevice()) {
+      const nativeUrl = nativeChatGPTConversationUrl(cleanWebUrl);
+
+      if (nativeUrl) {
+        // Sur iPhone/iPad : ouvre directement la conversation dans
+        // l'app ChatGPT via son URL scheme natif.
+        window.location.href = nativeUrl;
+        return;
+      }
+    }
+
+    // PC / autres appareils : comportement web habituel.
+    window.open(cleanWebUrl, "_blank", "noopener");
   }
 
   function openLibrary() {
