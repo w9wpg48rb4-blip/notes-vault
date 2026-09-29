@@ -268,37 +268,107 @@
     try {
       const url = new URL(rawUrl);
       const host = url.hostname.toLowerCase();
-
-      if (!["chatgpt.com", "www.chatgpt.com", "chat.openai.com"].includes(host)) {
-        return null;
-      }
-
+      if (!["chatgpt.com", "www.chatgpt.com", "chat.openai.com"].includes(host)) return null;
       const match = url.pathname.match(/^\/c\/([A-Za-z0-9-]+)\/?$/);
       if (!match) return null;
-
-      // Important : on ouvre le thread via le schéma natif de l'app,
-      // sans hash #notes-private et sans passer par le universal-link HTTPS.
       return `com.openai.chat://chatgpt.com/c/${match[1]}`;
     } catch {
       return null;
     }
   }
 
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {}
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      ta.remove();
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+
+  function closeOpenChoice() {
+    document.getElementById("openChoiceOverlay")?.remove();
+    document.getElementById("openChoiceCard")?.remove();
+  }
+
+  function showOpenChoice(chat) {
+    closeOpenChoice();
+
+    const overlay = document.createElement("div");
+    overlay.id = "openChoiceOverlay";
+    overlay.className = "open-choice-overlay";
+
+    const card = document.createElement("div");
+    card.id = "openChoiceCard";
+    card.className = "open-choice-card";
+    card.innerHTML = `
+      <div class="mini-kicker">ouvrir dans chatgpt</div>
+      <h3></h3>
+      <p class="open-choice-copy">
+        Sur iPhone, l’ouverture directe d’un thread depuis une autre app peut faire disparaître
+        <strong>Modifier / Réessayer</strong>. Le mode ci-dessous contourne ça en te faisant
+        rentrer dans le chat depuis la recherche interne de ChatGPT.
+      </p>
+
+      <button id="fullControlsBtn" class="open-choice-primary">
+        ✦ Ouvrir avec tous les contrôles
+        <small>recommandé · Modifier / Réessayer</small>
+      </button>
+
+      <button id="quickOpenBtn" class="open-choice-secondary">
+        Ouvrir directement
+        <small>plus rapide · certains contrôles iOS peuvent manquer</small>
+      </button>
+
+      <button id="cancelOpenBtn" class="open-choice-cancel">Annuler</button>
+    `;
+    card.querySelector("h3").textContent = chat.label || "Ce chat";
+
+    document.body.append(overlay, card);
+
+    overlay.addEventListener("click", closeOpenChoice);
+    card.querySelector("#cancelOpenBtn").addEventListener("click", closeOpenChoice);
+
+    card.querySelector("#quickOpenBtn").addEventListener("click", () => {
+      const cleanWebUrl = String(chat.url || "").split("#")[0];
+      const nativeUrl = nativeChatGPTConversationUrl(cleanWebUrl);
+      closeOpenChoice();
+      if (nativeUrl) window.location.href = nativeUrl;
+      else window.open(cleanWebUrl, "_blank", "noopener");
+    });
+
+    card.querySelector("#fullControlsBtn").addEventListener("click", async () => {
+      // On copie automatiquement le nom du chat pour la recherche interne.
+      await copyText(chat.label || "");
+      closeOpenChoice();
+
+      // On ouvre uniquement l'accueil de l'app, PAS le thread en deep-link.
+      // L'utilisateur ouvre ensuite ☰ > Rechercher, colle le nom, puis touche le résultat.
+      // Cette dernière navigation est interne à ChatGPT et récupère l'UI normale du thread.
+      window.location.href = "com.openai.chat://";
+    });
+  }
+
   function openChatFromNotes(chat) {
     const cleanWebUrl = String(chat.url || "").split("#")[0];
 
     if (isIOSDevice()) {
-      const nativeUrl = nativeChatGPTConversationUrl(cleanWebUrl);
-
-      if (nativeUrl) {
-        // Sur iPhone/iPad : ouvre directement la conversation dans
-        // l'app ChatGPT via son URL scheme natif.
-        window.location.href = nativeUrl;
-        return;
-      }
+      showOpenChoice({ ...chat, url: cleanWebUrl });
+      return;
     }
 
-    // PC / autres appareils : comportement web habituel.
     window.open(cleanWebUrl, "_blank", "noopener");
   }
 

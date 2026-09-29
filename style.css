@@ -124,3 +124,76 @@
 @media(min-width:900px){
   .library-drawer{width:330px}
 }
+
+
+/* V4.3 — choix d'ouverture iPhone */
+.open-choice-overlay{
+  position:fixed;
+  inset:0;
+  z-index:150;
+  background:rgba(52,28,40,.35);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+.open-choice-card{
+  position:fixed;
+  left:16px;
+  right:16px;
+  bottom:calc(18px + env(safe-area-inset-bottom));
+  z-index:151;
+  max-width:430px;
+  margin:0 auto;
+  padding:20px;
+  border-radius:26px;
+  background:
+    radial-gradient(circle at 15% 0%,#ffe3ef 0,transparent 38%),
+    linear-gradient(180deg,#fffafd,#fff3f8);
+  border:1px solid rgba(186,112,145,.18);
+  box-shadow:0 28px 80px rgba(67,33,49,.30);
+}
+.open-choice-card h3{
+  margin:5px 0 8px;
+  color:#704258;
+  font-size:21px;
+}
+.open-choice-copy{
+  margin:0 0 14px;
+  color:#9b7184;
+  font-size:11px;
+  line-height:1.55;
+}
+.open-choice-primary,
+.open-choice-secondary,
+.open-choice-cancel{
+  width:100%;
+  border-radius:16px;
+  padding:12px 14px;
+  font-weight:850;
+}
+.open-choice-primary{
+  border:0;
+  color:#fff;
+  background:linear-gradient(135deg,#dc82a8,#b95f87);
+  box-shadow:0 10px 25px rgba(184,95,135,.20);
+}
+.open-choice-secondary{
+  margin-top:8px;
+  border:1px solid rgba(184,111,142,.18);
+  color:#7f5066;
+  background:rgba(255,255,255,.74);
+}
+.open-choice-primary small,
+.open-choice-secondary small{
+  display:block;
+  margin-top:3px;
+  font-size:9px;
+  font-weight:650;
+  opacity:.78;
+}
+.open-choice-cancel{
+  margin-top:6px;
+  border:0;
+  color:#a27b8d;
+  background:transparent;
+  font-size:10px;
+}
