@@ -3,9 +3,9 @@
   "short_name": "Notes",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#0e0e10",
-  "theme_color": "#111113",
-  "description": "Private encrypted links vault.",
+  "background_color": "#fff8fb",
+  "theme_color": "#f9edf3",
+  "description": "Notes",
   "icons": [
     {
       "src": "icon.svg",

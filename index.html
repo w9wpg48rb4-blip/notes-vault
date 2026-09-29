@@ -2,10 +2,10 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#111113">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f9edf3">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Notes">
   <title>Notes</title>
   <link rel="manifest" href="manifest.webmanifest">
@@ -13,108 +13,134 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main class="shell">
-  <section id="decoyView" class="hidden">
-    <header class="topbar">
-      <div id="secretTap"><div class="eyebrow">MES NOTES</div><h1>Notes</h1></div>
-      <button class="iconbtn">＋</button>
-    </header>
-    <div class="fakeSearch">🔎 Rechercher</div>
-    <div class="fakeGrid">
-      <article class="fakeNote"><h3>Planning</h3><p>Révisions, rendez-vous, choses à faire…</p><span>Aujourd’hui</span></article>
-      <article class="fakeNote"><h3>Liste de la semaine</h3><p>Courses et rappels</p><span>Hier</span></article>
-      <article class="fakeNote"><h3>Idées</h3><p>Notes rapides</p><span>Cette semaine</span></article>
-    </div>
-  </section>
-
-  <section id="realApp">
-    <header class="topbar">
-      <div><div class="eyebrow">PERSONAL</div><h1>Notes</h1></div>
-      <button id="lockBtn" class="iconbtn hidden" aria-label="Verrouiller">⌁</button>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <main class="app-shell">
+    <header class="app-header">
+      <div><div class="mini-kicker">my little space ♡</div><h1>Notes</h1></div>
+      <button id="lockBtn" class="round-icon hidden" aria-label="Verrouiller">♡</button>
     </header>
 
-    <section id="welcomeView" class="panel">
+    <section id="welcomeView" class="glass-card">
+      <div class="hero-icon">୨ৎ</div>
       <h2>Créer ton espace</h2>
-      <p class="muted">Aucune API OpenAI. Tes liens sont chiffrés dans ton navigateur.</p>
+      <p class="sub">Tes raccourcis restent chiffrés dans ton navigateur.</p>
       <label for="newPin">Code privé</label>
       <input id="newPin" type="password" inputmode="numeric" autocomplete="new-password" placeholder="6 chiffres minimum">
-      <label for="confirmPin">Confirme le code</label>
+      <label for="confirmPin">Confirme ton code</label>
       <input id="confirmPin" type="password" inputmode="numeric" autocomplete="new-password" placeholder="Même code">
-      <button id="createVaultBtn" class="primary">Créer</button>
-      <div class="divider"><span>ou</span></div>
-      <label for="importText">Importer un lien / code privé</label>
-      <textarea id="importText" rows="4" placeholder="Colle ici ton lien privé ou ton code de sauvegarde"></textarea>
-      <button id="importBtn" class="secondary">Importer</button>
+      <button id="createVaultBtn" class="btn primary">Créer mon espace</button>
+      <div class="separator"><span>ou</span></div>
+      <label for="importText">Importer une sauvegarde</label>
+      <textarea id="importText" rows="4" placeholder="Colle ton lien privé ou ton code de sauvegarde"></textarea>
+      <button id="importBtn" class="btn soft">Importer</button>
       <p id="welcomeMsg" class="msg"></p>
     </section>
 
-    <section id="unlockView" class="panel hidden">
-      <h2>Ouvrir</h2>
-      <p class="muted">Entre ton code.</p>
+    <section id="unlockView" class="glass-card hidden">
+      <div class="hero-icon">♡</div>
+      <h2>Welcome back</h2>
+      <p class="sub">Entre ton code pour retrouver tes notes.</p>
       <input id="unlockPin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••••">
-      <button id="unlockBtn" class="primary">Continuer</button>
-      <button id="backToDecoyBtn" class="textbtn hidden">Retour aux notes</button>
-      <button id="resetLocalBtn" class="textbtn">Effacer ce coffre de cet appareil</button>
+      <button id="unlockBtn" class="btn primary">Ouvrir</button>
+      <button id="resetLocalBtn" class="ghost-btn">Effacer uniquement sur cet appareil</button>
       <p id="unlockMsg" class="msg"></p>
     </section>
 
     <section id="vaultView" class="hidden">
-      <section class="panel compact">
-        <div class="row between">
-          <div><div class="eyebrow">MES NOTES</div><div id="countLabel" class="count">0 conversation</div></div>
-          <button id="addBtn" class="smallbtn">＋ Ajouter</button>
+      <section class="glass-card dashboard">
+        <div class="dashboard-top">
+          <div><div class="mini-kicker">your private corner</div><div id="countLabel" class="big-count">0 note</div></div>
+          <button id="addBtn" class="pill-btn">＋ Ajouter</button>
         </div>
-        <input id="searchInput" class="searchInput" type="search" placeholder="Rechercher un chat…">
+        <div class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Rechercher une note…"></div>
         <div id="categoryFilters" class="chips"></div>
       </section>
 
-      <section id="addPanel" class="panel hidden">
-        <h2>Ajouter un chat</h2>
-        <p class="muted small">Ouvre le chat ChatGPT, copie son adresse, puis colle-la ici.</p>
+      <section id="addPanel" class="glass-card hidden">
+        <div class="section-title-row">
+          <div><div class="mini-kicker">new note</div><h2>Ajouter un chat</h2></div>
+          <button id="cancelAddBtn" class="tiny-x">×</button>
+        </div>
         <label for="chatLabel">Nom discret</label>
-        <input id="chatLabel" type="text" maxlength="80" placeholder="Ex : Marketing - TD 2">
+        <input id="chatLabel" type="text" maxlength="80" placeholder="Ex : Marketing — TD 2">
         <label for="chatCategory">Catégorie</label>
         <input id="chatCategory" type="text" maxlength="40" list="categorySuggestions" placeholder="Ex : Cours">
-        <datalist id="categorySuggestions"><option value="Cours"><option value="Projet"><option value="Perso"><option value="Idées"></datalist>
-        <label for="chatUrl">Lien du chat</label>
+        <datalist id="categorySuggestions"><option value="Cours"><option value="Perso"><option value="Projet"><option value="Idées"><option value="Archive"></datalist>
+        <label for="chatUrl">Lien ChatGPT</label>
         <input id="chatUrl" type="url" placeholder="https://chatgpt.com/c/...">
-        <div class="row gap"><button id="saveChatBtn" class="primary">Enregistrer</button><button id="cancelAddBtn" class="secondary">Annuler</button></div>
+        <button id="saveChatBtn" class="btn primary">Enregistrer ♡</button>
         <p id="addMsg" class="msg"></p>
       </section>
 
-      <section class="panel listpanel">
-        <div id="emptyState" class="empty"><div class="emptyIcon">✦</div><p>Rien ici pour l’instant.</p><p class="muted small">Ajoute le lien d’un chat, puis archive l’original dans ChatGPT.</p></div>
+      <section class="glass-card notes-list-card">
+        <div id="emptyState" class="empty-state">
+          <div class="empty-bow">౨ৎ</div><p>Rien ici pour l’instant.</p><span>Ajoute ton premier raccourci privé.</span>
+        </div>
         <div id="chatList"></div>
       </section>
 
-      <section class="panel">
-        <h2>Mode discret</h2>
-        <div class="settingRow">
-          <div><strong>Écran leurre</strong><p>À l’ouverture, Notes ressemble à une app banale. Tape 5 fois sur le grand titre « Notes » pour faire apparaître le code.</p></div>
-          <label class="switch"><input id="decoyToggle" type="checkbox"><span></span></label>
+      <section class="glass-card">
+        <div class="section-title-row">
+          <div><div class="mini-kicker">cloud sync</div><h2>Synchro automatique</h2></div>
+          <span id="syncBadge" class="badge off">off</span>
         </div>
-        <p id="privacyMsg" class="msg"></p>
-      </section>
+        <p class="sub small">Synchronise automatiquement ton coffre chiffré entre ton PC et ton iPhone via un dépôt GitHub privé.</p>
 
-      <section class="panel">
-        <h2>Accès sur tes autres appareils</h2>
-        <p class="muted small">Génère une copie chiffrée de ta liste de chats, puis importe-la sur l’autre appareil.</p>
-        <button id="copyPrivateLinkBtn" class="secondary">Copier mon lien privé</button>
-        <button id="copyBackupBtn" class="secondary">Copier le code de sauvegarde</button>
+        <div id="syncOffArea"><button id="openSyncSetupBtn" class="btn soft">Configurer la synchro ✦</button></div>
+
+        <div id="syncSetupArea" class="hidden">
+          <label for="ghOwner">Pseudo GitHub</label>
+          <input id="ghOwner" type="text" autocomplete="off" placeholder="tonpseudo">
+          <label for="ghRepo">Nom du dépôt privé</label>
+          <input id="ghRepo" type="text" autocomplete="off" placeholder="notes-vault-sync">
+          <label for="ghToken">Token GitHub</label>
+          <input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_...">
+          <div class="mini-note">Le token reste dans ton coffre chiffré. Ne le mets jamais dans ton dépôt public.</div>
+          <button id="connectSyncBtn" class="btn primary">Activer la synchro</button>
+          <button id="cancelSyncBtn" class="ghost-btn">Annuler</button>
+        </div>
+
+        <div id="syncOnArea" class="hidden">
+          <div class="sync-line">
+            <span id="syncDot" class="dot"></span>
+            <div><strong id="syncStatusText">À jour</strong><span id="syncRepoLabel"></span></div>
+          </div>
+          <button id="syncNowBtn" class="btn soft">Synchroniser maintenant</button>
+          <button id="disableSyncBtn" class="ghost-btn danger-text">Désactiver la synchro</button>
+        </div>
         <p id="syncMsg" class="msg"></p>
       </section>
 
-      <section class="panel danger"><h2>Rappel</h2><p class="muted small">Ajoute le chat ici → vérifie qu’il s’ouvre → puis archive l’original dans ChatGPT. Ne le supprime pas.</p></section>
-    </section>
-  </section>
-</main>
+      <section class="glass-card">
+        <div class="mini-kicker">backup</div>
+        <h2>Sauvegarde & nouvel appareil</h2>
+        <p class="sub small">Après avoir activé la synchro pour la première fois, fais une dernière importation sur ton iPhone. Ensuite la synchro devient automatique.</p>
+        <button id="copyPrivateLinkBtn" class="btn soft">Copier mon lien privé</button>
+        <button id="copyBackupBtn" class="btn soft">Copier mon code de sauvegarde</button>
+        <div class="separator"><span>restaurer</span></div>
+        <textarea id="restoreText" rows="3" placeholder="Colle ici une sauvegarde plus récente…"></textarea>
+        <button id="restoreBtn" class="btn soft">Restaurer sur cet appareil</button>
+        <p id="backupMsg" class="msg"></p>
+      </section>
 
-<template id="chatItemTemplate">
-  <article class="chatItem">
-    <button class="chatOpen"><span class="chatDot"></span><span class="chatTexts"><span class="chatName"></span><span class="chatCategory"></span></span><span class="chev">›</span></button>
-    <button class="chatMenu" aria-label="Options">···</button>
-  </article>
-</template>
-<script src="app.js"></script>
+      <section class="glass-card caution">
+        <div class="mini-kicker">important</div>
+        <p>Notes ne supprime jamais tes conversations ChatGPT. Ajoute le lien → vérifie-le → puis archive le chat original.</p>
+      </section>
+    </section>
+  </main>
+
+  <template id="chatItemTemplate">
+    <article class="note-row">
+      <button class="note-main">
+        <div class="note-icon">♡</div>
+        <div class="note-text"><strong class="note-name"></strong><span class="note-category"></span></div>
+        <span class="arrow">›</span>
+      </button>
+      <button class="note-more" aria-label="Options">•••</button>
+    </article>
+  </template>
+  <script src="app.js"></script>
 </body>
 </html>
