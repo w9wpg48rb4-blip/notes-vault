@@ -126,10 +126,35 @@
 
       <section class="glass-card caution">
         <div class="mini-kicker">important</div>
-        <p>Notes ne supprime jamais tes conversations ChatGPT. Ajoute le lien → vérifie-le → puis archive le chat original.</p>
+        <p>Notes ne supprime, n’archive et ne désarchive jamais tes conversations ChatGPT. Elle garde seulement tes raccourcis privés.</p>
       </section>
     </section>
   </main>
+
+
+  <button id="libraryLauncher" class="library-launcher hidden" aria-label="Ouvrir mes chats">♡ chats</button>
+  <div id="libraryOverlay" class="library-overlay hidden"></div>
+  <aside id="libraryDrawer" class="library-drawer hidden" aria-label="Bibliothèque de chats">
+    <div class="library-head">
+      <div>
+        <div class="mini-kicker">private library</div>
+        <h2>Mes chats ♡</h2>
+      </div>
+      <button id="closeLibraryBtn" class="tiny-x" aria-label="Fermer">×</button>
+    </div>
+
+    <div class="search-box library-search">
+      <span>⌕</span>
+      <input id="librarySearchInput" type="search" placeholder="Rechercher un chat…">
+    </div>
+
+    <div id="libraryCategoryFilters" class="chips library-chips"></div>
+    <div id="libraryChatList" class="library-chat-list"></div>
+
+    <div class="library-foot">
+      <p>Notes ne modifie jamais l’état archivé / désarchivé de tes conversations.</p>
+    </div>
+  </aside>
 
   <template id="chatItemTemplate">
     <article class="note-row">
@@ -141,7 +166,6 @@
       <button class="note-more" aria-label="Options">•••</button>
     </article>
   </template>
-  <script src="private-launcher.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -17,10 +17,17 @@
   const countLabel = $("countLabel");
   const searchInput = $("searchInput");
   const categoryFilters = $("categoryFilters");
+  const libraryLauncher = $("libraryLauncher");
+  const libraryOverlay = $("libraryOverlay");
+  const libraryDrawer = $("libraryDrawer");
+  const librarySearchInput = $("librarySearchInput");
+  const libraryCategoryFilters = $("libraryCategoryFilters");
+  const libraryChatList = $("libraryChatList");
 
   let unlockedPin = null;
   let vaultData = null;
   let currentCategory = "Tous";
+  let libraryCategory = "Tous";
   let syncTimer = null;
   let syncBusy = false;
 
@@ -158,6 +165,8 @@
     welcomeView.classList.add("hidden");
     unlockView.classList.remove("hidden");
     lockBtn.classList.add("hidden");
+    libraryLauncher.classList.add("hidden");
+    closeLibrary();
   }
 
   function showWelcome() {
@@ -167,6 +176,8 @@
     unlockView.classList.add("hidden");
     welcomeView.classList.remove("hidden");
     lockBtn.classList.add("hidden");
+    libraryLauncher.classList.add("hidden");
+    closeLibrary();
   }
 
   function showVault() {
@@ -174,8 +185,10 @@
     unlockView.classList.add("hidden");
     vaultView.classList.remove("hidden");
     lockBtn.classList.remove("hidden");
+    libraryLauncher.classList.remove("hidden");
     renderCategories();
     renderChats();
+    renderLibrarySidebar();
     updateSyncUI();
 
     if (vaultData.sync?.enabled) {
@@ -245,6 +258,87 @@
     return ["Tous", ...Array.from(set).sort((a, b) => a.localeCompare(b, "fr"))];
   }
 
+
+  function openChatFromNotes(chat) {
+    // Ouvre le vrai thread ChatGPT, sans toucher à son état archivé/désarchivé.
+    // On laisse Notes ouvert derrière pour que ta bibliothèque reste disponible.
+    window.open(chat.url, "_blank", "noopener");
+  }
+
+  function openLibrary() {
+    if (!vaultData) return;
+    libraryDrawer.classList.remove("hidden");
+    libraryOverlay.classList.remove("hidden");
+    libraryDrawer.classList.add("open");
+    libraryOverlay.classList.add("open");
+    renderLibrarySidebar();
+    setTimeout(() => librarySearchInput?.focus(), 80);
+  }
+
+  function closeLibrary() {
+    libraryDrawer.classList.remove("open");
+    libraryOverlay.classList.remove("open");
+    setTimeout(() => {
+      libraryDrawer.classList.add("hidden");
+      libraryOverlay.classList.add("hidden");
+    }, 220);
+  }
+
+  function renderLibrarySidebar() {
+    if (!vaultData) return;
+
+    const cats = categories();
+    if (!cats.includes(libraryCategory)) libraryCategory = "Tous";
+
+    libraryCategoryFilters.innerHTML = "";
+    for (const category of cats) {
+      const button = document.createElement("button");
+      button.className = `chip ${category === libraryCategory ? "active" : ""}`;
+      button.textContent = category;
+      button.addEventListener("click", () => {
+        libraryCategory = category;
+        renderLibrarySidebar();
+      });
+      libraryCategoryFilters.appendChild(button);
+    }
+
+    const query = (librarySearchInput?.value || "").trim().toLocaleLowerCase("fr");
+    const chats = [...vaultData.chats]
+      .filter(chat => libraryCategory === "Tous" || (chat.category || "Autre") === libraryCategory)
+      .filter(chat => {
+        if (!query) return true;
+        return `${chat.label} ${chat.category || ""}`.toLocaleLowerCase("fr").includes(query);
+      })
+      .sort((a, b) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0));
+
+    libraryChatList.innerHTML = "";
+
+    if (!chats.length) {
+      const empty = document.createElement("div");
+      empty.className = "library-empty";
+      empty.innerHTML = "<span>౨ৎ</span><p>Aucun chat ici.</p>";
+      libraryChatList.appendChild(empty);
+      return;
+    }
+
+    for (const chat of chats) {
+      const button = document.createElement("button");
+      button.className = "library-chat";
+      button.innerHTML = `
+        <span class="library-chat-icon">♡</span>
+        <span class="library-chat-copy">
+          <strong></strong>
+          <small></small>
+        </span>
+        <span class="library-chat-arrow">›</span>
+      `;
+      button.querySelector("strong").textContent = chat.label;
+      button.querySelector("small").textContent = chat.category || "Autre";
+      button.addEventListener("click", () => openChatFromNotes(chat));
+      libraryChatList.appendChild(button);
+    }
+  }
+
   function renderCategories() {
     const list = categories();
     if (!list.includes(currentCategory)) currentCategory = "Tous";
@@ -287,8 +381,7 @@
       row.querySelector(".note-category").textContent = chat.category || "Autre";
 
       row.querySelector(".note-main").addEventListener("click", () => {
-        window.open(chat.url, "_blank", "noopener");
-        lock();
+        openChatFromNotes(chat);
       });
 
       row.querySelector(".note-more").addEventListener("click", async () => {
@@ -324,6 +417,8 @@
 
       chatList.appendChild(row);
     }
+
+    if (vaultData && libraryChatList) renderLibrarySidebar();
   }
 
   async function saveChat() {
@@ -632,6 +727,12 @@
     setMsg("syncMsg", "Synchro désactivée.", "ok");
     updateSyncUI();
   }
+
+
+  libraryLauncher.addEventListener("click", openLibrary);
+  libraryOverlay.addEventListener("click", closeLibrary);
+  $("closeLibraryBtn").addEventListener("click", closeLibrary);
+  librarySearchInput.addEventListener("input", renderLibrarySidebar);
 
   $("createVaultBtn").addEventListener("click", createVault);
   $("unlockBtn").addEventListener("click", unlockVault);
