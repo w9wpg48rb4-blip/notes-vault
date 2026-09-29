@@ -277,23 +277,37 @@
     }
   }
 
-  async function copyText(text) {
+  async function copyChatLabelForSearch(text) {
+    const value = String(text || "");
+
+    // 1) API presse-papiers moderne
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(value);
       return true;
     } catch {}
+
+    // 2) Fallback iOS/PWA : textarea temporaire, sans popup système
+    let ta = null;
     try {
-      const ta = document.createElement("textarea");
-      ta.value = text;
+      ta = document.createElement("textarea");
+      ta.value = value;
       ta.setAttribute("readonly", "");
+      ta.setAttribute("aria-hidden", "true");
       ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      ta.style.top = "0";
       ta.style.opacity = "0";
       document.body.appendChild(ta);
+
+      ta.focus();
       ta.select();
+      ta.setSelectionRange(0, value.length);
+
       const ok = document.execCommand("copy");
       ta.remove();
-      return ok;
+      return Boolean(ok);
     } catch {
+      ta?.remove();
       return false;
     }
   }
@@ -351,7 +365,12 @@
 
     card.querySelector("#fullControlsBtn").addEventListener("click", async () => {
       // On copie automatiquement le nom du chat pour la recherche interne.
-      await copyText(chat.label || "");
+      const copied = await copyChatLabelForSearch(chat.label || "");
+      if (!copied) {
+        // Aucun prompt système : le nom reste visible sur la carte et pourra
+        // être retapé manuellement dans la recherche ChatGPT si nécessaire.
+        console.warn("Notes: copie automatique du nom indisponible sur cet appareil.");
+      }
       closeOpenChoice();
 
       // On ouvre uniquement l'accueil de l'app, PAS le thread en deep-link.
