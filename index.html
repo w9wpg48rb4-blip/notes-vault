@@ -1,172 +1,220 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta name="notes-vault-version" content="4.6">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f9edf3">
+  <meta name="theme-color" content="#fff5fa">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Notes">
+  <meta name="notes-vault-version" content="5.1">
   <title>Notes</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style-v5.css?v=500">
 </head>
 <body>
-  <div class="ambient ambient-one"></div>
-  <div class="ambient ambient-two"></div>
-  <main class="app-shell">
-    <header class="app-header">
-      <div><div class="mini-kicker">my little space ♡</div><h1>Notes</h1></div>
-      <button id="lockBtn" class="round-icon hidden" aria-label="Verrouiller">♡</button>
+  <div class="blob blob-a"></div>
+  <div class="blob blob-b"></div>
+
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <div class="kicker">private space ♡</div>
+        <h1>Notes</h1>
+      </div>
+      <div class="top-actions">
+        <span class="version">v5.1</span>
+        <button id="lockBtn" class="icon-btn hidden" aria-label="Verrouiller">♡</button>
+      </div>
     </header>
 
-    <section id="welcomeView" class="glass-card">
-      <div class="hero-icon">୨ৎ</div>
+    <section id="welcomeView" class="card auth-card">
+      <div class="hero">୨ৎ</div>
       <h2>Créer ton espace</h2>
-      <p class="sub">Tes raccourcis restent chiffrés dans ton navigateur.</p>
+      <p class="muted">Tes raccourcis sont chiffrés sur l’appareil. Cette version reste compatible avec ton ancien coffre.</p>
+
       <label for="newPin">Code privé</label>
       <input id="newPin" type="password" inputmode="numeric" autocomplete="new-password" placeholder="6 chiffres minimum">
+
       <label for="confirmPin">Confirme ton code</label>
       <input id="confirmPin" type="password" inputmode="numeric" autocomplete="new-password" placeholder="Même code">
+
       <button id="createVaultBtn" class="btn primary">Créer mon espace</button>
+
       <div class="separator"><span>ou</span></div>
+
       <label for="importText">Importer une sauvegarde</label>
-      <textarea id="importText" rows="4" placeholder="Colle ton lien privé ou ton code de sauvegarde"></textarea>
-      <button id="importBtn" class="btn soft">Importer</button>
+      <textarea id="importText" rows="4" placeholder="Colle ton code de sauvegarde"></textarea>
+      <button id="importBtn" class="btn secondary">Importer</button>
       <p id="welcomeMsg" class="msg"></p>
     </section>
 
-    <section id="unlockView" class="glass-card hidden">
-      <div class="hero-icon">♡</div>
+    <section id="unlockView" class="card auth-card hidden">
+      <div class="hero">♡</div>
       <h2>Welcome back</h2>
-      <p class="sub">Entre ton code pour retrouver tes notes.</p>
+      <p class="muted">Entre ton code pour retrouver ta bibliothèque.</p>
       <input id="unlockPin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••••">
       <button id="unlockBtn" class="btn primary">Ouvrir</button>
-      <button id="resetLocalBtn" class="ghost-btn">Effacer uniquement sur cet appareil</button>
+      <button id="resetLocalBtn" class="text-btn danger">Effacer uniquement sur cet appareil</button>
       <p id="unlockMsg" class="msg"></p>
     </section>
 
     <section id="vaultView" class="hidden">
-      <section class="glass-card dashboard">
-        <div class="dashboard-top">
-          <div><div class="mini-kicker">your private corner</div><div id="countLabel" class="big-count">0 note</div></div>
-          <button id="addBtn" class="pill-btn">＋ Ajouter</button>
+      <section class="card dashboard">
+        <div class="dashboard-head">
+          <div>
+            <div class="kicker">your private library</div>
+            <div id="countLabel" class="count">0 chat</div>
+          </div>
+          <button id="addBtn" class="pill-btn">+ Ajouter</button>
         </div>
-        <div class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Rechercher une note…"></div>
+
+        <div class="search-wrap">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="Rechercher dans Notes…">
+        </div>
         <div id="categoryFilters" class="chips"></div>
       </section>
 
-      <section id="addPanel" class="glass-card hidden">
-        <div class="section-title-row">
-          <div><div class="mini-kicker">new note</div><h2>Ajouter un chat</h2></div>
-          <button id="cancelAddBtn" class="tiny-x">×</button>
+      <section id="addPanel" class="card hidden">
+        <div class="section-head">
+          <div>
+            <div class="kicker">shortcut</div>
+            <h2 id="editorTitle">Ajouter un chat</h2>
+          </div>
+          <button id="cancelAddBtn" class="mini-x" aria-label="Fermer">×</button>
         </div>
-        <label for="chatLabel">Nom discret</label>
-        <input id="chatLabel" type="text" maxlength="80" placeholder="Ex : Marketing — TD 2">
+
+        <label for="chatLabel">Nom dans Notes</label>
+        <input id="chatLabel" maxlength="80" placeholder="Ex. Data">
+
+        <label for="chatSearchTerm">Titre à rechercher dans ChatGPT</label>
+        <input id="chatSearchTerm" maxlength="120" placeholder="Laisse vide si c’est le même nom">
+        <p class="hint">Important : mets ici le vrai titre du chat dans ChatGPT si ton nom privé est différent.</p>
+
         <label for="chatCategory">Catégorie</label>
-        <input id="chatCategory" type="text" maxlength="40" list="categorySuggestions" placeholder="Ex : Cours">
-        <datalist id="categorySuggestions"><option value="Cours"><option value="Perso"><option value="Projet"><option value="Idées"><option value="Archive"></datalist>
-        <label for="chatUrl">Lien ChatGPT</label>
-        <input id="chatUrl" type="url" placeholder="https://chatgpt.com/c/...">
-        <button id="saveChatBtn" class="btn primary">Enregistrer ♡</button>
+        <input id="chatCategory" maxlength="40" placeholder="Cours, Perso, Story…">
+
+        <label for="chatUrl">Lien du chat</label>
+        <input id="chatUrl" inputmode="url" autocomplete="off" placeholder="https://chatgpt.com/c/...">
+
+        <button id="saveChatBtn" class="btn primary">Enregistrer</button>
         <p id="addMsg" class="msg"></p>
       </section>
 
-      <section class="glass-card notes-list-card">
-        <div id="emptyState" class="empty-state">
-          <div class="empty-bow">౨ৎ</div><p>Rien ici pour l’instant.</p><span>Ajoute ton premier raccourci privé.</span>
+      <section class="card list-card">
+        <div id="emptyState" class="empty hidden">
+          <div class="empty-icon">౨ৎ</div>
+          <p>Aucun chat ici.</p>
+          <span>Ajoute tes conversations privées avec leur lien.</span>
         </div>
         <div id="chatList"></div>
       </section>
 
-      <section class="glass-card">
-        <div class="section-title-row">
-          <div><div class="mini-kicker">cloud sync</div><h2>Synchro automatique</h2></div>
+      <section class="card how-card">
+        <div class="kicker">mode complet iphone</div>
+        <h2>Pour garder toutes les fonctions ChatGPT</h2>
+        <div class="steps">
+          <span>1</span><p>Touche un chat ici : Notes copie automatiquement le vrai titre à rechercher.</p>
+          <span>2</span><p>Quitte Notes, ouvre <strong>ChatGPT depuis son icône normale</strong>, puis ouvre <strong>Rechercher</strong> et fais <strong>Coller</strong>.</p>
+          <span>3</span><p>Touche le résultat. Comme ChatGPT a été ouvert normalement, le thread s’ouvre depuis l’intérieur de l’app.</p>
+        </div>
+        <p class="tiny-note">Notes ne désarchive, n’archive et ne supprime jamais une conversation ChatGPT.</p>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <div class="kicker">sync</div>
+            <h2>Synchronisation privée</h2>
+          </div>
           <span id="syncBadge" class="badge off">off</span>
         </div>
-        <p class="sub small">Synchronise automatiquement ton coffre chiffré entre ton PC et ton iPhone via un dépôt GitHub privé.</p>
 
-        <div id="syncOffArea"><button id="openSyncSetupBtn" class="btn soft">Configurer la synchro ✦</button></div>
+        <div id="syncOffArea">
+          <p class="muted small">Optionnel : synchronise ton coffre chiffré avec ton dépôt GitHub privé.</p>
+          <button id="openSyncSetupBtn" class="btn secondary">Configurer</button>
+        </div>
 
         <div id="syncSetupArea" class="hidden">
           <label for="ghOwner">Pseudo GitHub</label>
-          <input id="ghOwner" type="text" autocomplete="off" placeholder="tonpseudo">
-          <label for="ghRepo">Nom du dépôt privé</label>
-          <input id="ghRepo" type="text" autocomplete="off" placeholder="notes-vault-sync">
+          <input id="ghOwner" autocomplete="off" placeholder="ton-pseudo">
+
+          <label for="ghRepo">Dépôt privé</label>
+          <input id="ghRepo" autocomplete="off" placeholder="notes-vault-sync">
+
           <label for="ghToken">Token GitHub</label>
-          <input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_...">
-          <div class="mini-note">Le token reste dans ton coffre chiffré. Ne le mets jamais dans ton dépôt public.</div>
-          <button id="connectSyncBtn" class="btn primary">Activer la synchro</button>
-          <button id="cancelSyncBtn" class="ghost-btn">Annuler</button>
+          <input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_…">
+          <p class="hint">Laisse le token vide uniquement si tu modifies une synchro déjà configurée.</p>
+
+          <div class="two">
+            <button id="connectSyncBtn" class="btn primary">Enregistrer</button>
+            <button id="cancelSyncBtn" class="btn secondary">Annuler</button>
+          </div>
         </div>
 
         <div id="syncOnArea" class="hidden">
           <div class="sync-line">
-            <span id="syncDot" class="dot"></span>
-            <div><strong id="syncStatusText">À jour</strong><span id="syncRepoLabel"></span></div>
+            <span id="syncDot" class="dot ok"></span>
+            <div>
+              <strong id="syncStatusText">Synchro activée</strong>
+              <span id="syncRepoLabel"></span>
+            </div>
           </div>
-          <button id="syncNowBtn" class="btn soft">Synchroniser maintenant</button>
-          <button id="disableSyncBtn" class="ghost-btn danger-text">Désactiver la synchro</button>
+
+          <div class="two">
+            <button id="syncNowBtn" class="btn secondary">Synchroniser</button>
+            <button id="editSyncBtn" class="btn secondary">Modifier</button>
+          </div>
+          <button id="disableSyncBtn" class="text-btn danger">Désactiver la synchro</button>
         </div>
         <p id="syncMsg" class="msg"></p>
       </section>
 
-      <section class="glass-card">
-        <div class="mini-kicker">backup</div>
-        <h2>Sauvegarde & nouvel appareil</h2>
-        <p class="sub small">Après avoir activé la synchro pour la première fois, fais une dernière importation sur ton iPhone. Ensuite la synchro devient automatique.</p>
-        <button id="copyPrivateLinkBtn" class="btn soft">Copier mon lien privé</button>
-        <button id="copyBackupBtn" class="btn soft">Copier mon code de sauvegarde</button>
-        <div class="separator"><span>restaurer</span></div>
-        <textarea id="restoreText" rows="3" placeholder="Colle ici une sauvegarde plus récente…"></textarea>
-        <button id="restoreBtn" class="btn soft">Restaurer sur cet appareil</button>
-        <p id="backupMsg" class="msg"></p>
-      </section>
+      <section class="card">
+        <div class="kicker">backup</div>
+        <h2>Sauvegarde chiffrée</h2>
+        <p class="muted small">À garder dans un endroit privé. Elle contient aussi ta configuration de synchro si elle est activée.</p>
 
-      <section class="glass-card caution">
-        <div class="mini-kicker">important</div>
-        <p>Notes ne supprime, n’archive et ne désarchive jamais tes conversations ChatGPT. Elle garde seulement tes raccourcis privés.</p>
+        <button id="copyBackupBtn" class="btn secondary">Copier mon code de sauvegarde</button>
+
+        <label for="restoreText">Restaurer dans ce coffre</label>
+        <textarea id="restoreText" rows="4" placeholder="Colle un code de sauvegarde"></textarea>
+        <button id="restoreBtn" class="btn secondary">Restaurer</button>
+        <p id="backupMsg" class="msg"></p>
       </section>
     </section>
   </main>
 
+  <div id="toast" class="toast hidden" role="status"></div>
 
-  <button id="libraryLauncher" class="library-launcher hidden" aria-label="Ouvrir mes chats">♡ chats</button>
-  <div id="libraryOverlay" class="library-overlay hidden"></div>
-  <aside id="libraryDrawer" class="library-drawer hidden" aria-label="Bibliothèque de chats">
-    <div class="library-head">
-      <div>
-        <div class="mini-kicker">private library</div>
-        <h2>Mes chats ♡</h2>
-      </div>
-      <button id="closeLibraryBtn" class="tiny-x" aria-label="Fermer">×</button>
-    </div>
-
-    <div class="search-box library-search">
-      <span>⌕</span>
-      <input id="librarySearchInput" type="search" placeholder="Rechercher un chat…">
-    </div>
-
-    <div id="libraryCategoryFilters" class="chips library-chips"></div>
-    <div id="libraryChatList" class="library-chat-list"></div>
-
-    <div class="library-foot">
-      <p>Notes ne modifie jamais l’état archivé / désarchivé de tes conversations.</p>
-    </div>
-  </aside>
+  <div id="sheetOverlay" class="sheet-overlay hidden"></div>
+  <section id="actionSheet" class="sheet hidden" aria-modal="true">
+    <div class="sheet-handle"></div>
+    <div class="kicker">options</div>
+    <h2 id="sheetTitle">Chat</h2>
+    <button id="sheetEditBtn" class="sheet-btn">Modifier le raccourci</button>
+    <button id="sheetCopySearchBtn" class="sheet-btn">Copier le titre de recherche</button>
+    <button id="sheetCopyLinkBtn" class="sheet-btn">Copier le lien du chat</button>
+    <button id="sheetRemoveBtn" class="sheet-btn danger-row">Retirer de Notes</button>
+    <button id="sheetCancelBtn" class="sheet-cancel">Annuler</button>
+  </section>
 
   <template id="chatItemTemplate">
-    <article class="note-row">
-      <button class="note-main">
-        <div class="note-icon">♡</div>
-        <div class="note-text"><strong class="note-name"></strong><span class="note-category"></span></div>
-        <span class="arrow">›</span>
+    <article class="chat-row">
+      <button class="chat-main">
+        <span class="chat-icon">♡</span>
+        <span class="chat-copy">
+          <strong class="chat-name"></strong>
+          <small class="chat-meta"></small>
+        </span>
+        <span class="chat-arrow">›</span>
       </button>
-      <button class="note-more" aria-label="Options">•••</button>
+      <button class="chat-more" aria-label="Options">•••</button>
     </article>
   </template>
-  <script src="app-v46.js?v=46"></script>
+
+  <script src="app-v51.js?v=510"></script>
 </body>
 </html>
